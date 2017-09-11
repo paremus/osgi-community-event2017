@@ -23,6 +23,11 @@
 
     <!-- Workspace Dependencies -->
     <!-- TODO: reference your workspace projects to be indexed here -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>org.example.command</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
   </dependencies>
 
