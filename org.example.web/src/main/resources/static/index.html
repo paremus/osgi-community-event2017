@@ -1,0 +1,98 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paremus Service Fabric Trains Example</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	crossorigin="anonymous">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+	integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+	crossorigin="anonymous" />
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+	integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+	crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="span4 logo">
+				<img border="0" src="img/logo-paremus.png" alt="Paremus Ltd">
+			</div>
+			<div class="span4">
+				<h4>Welcome to the &ldquo;Points of Interest&rdquo; Example</h4>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="span6">
+				<form>
+					<input id="searchField" type="text"></input> <button type="button" onclick="doSearch()">Search</button>
+				</form>
+				<ul id="searchResults"></ul>
+			</div>
+		</div>
+		<div id="mainMap"></div>
+	</div>
+</body>
+
+<script>
+	var map;
+	
+	// set up the map
+	map = new L.Map('mainMap');
+
+	// create the tile layer with correct attribution
+	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	var osmAttrib='Map data &#169; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+	var osm = new L.TileLayer(osmUrl, {minZoom: 3, maxZoom: 19, attribution: osmAttrib});		
+
+	// start the map in Ludwigsburg
+	map.setView(new L.LatLng(48.8927, 9.1950), 15);
+	map.addLayer(osm);
+
+	function showMarker(latitude, longitude, message) {
+		var plotll = new L.LatLng(latitude, longitude);
+		var plotmark = new L.Marker(plotll);
+		
+		map.addLayer(plotmark);
+		var popup = plotmark.bindPopup("<b>" + message + "</b>");
+		popup.on('popupclose', function(event) {
+			map.removeLayer(plotmark);
+		});
+		popup.openPopup();
+		map.flyTo(plotll);
+	}
+
+	function doSearch() {
+		var searchString = document.getElementById("searchField").value;
+		console.log("Searching for " + searchString);
+		
+		var httpReq = new XMLHttpRequest();
+		httpReq.addEventListener("load", function() {
+			var listElems = "";
+			if (httpReq.status >= 200 && httpReq.status <= 299) {
+				var response = httpReq.responseText;
+				var pois = JSON.parse(response);
+				if (pois.length == 0) {
+					listElems = "<li><strong>No results found.</strong></li>"
+				} else {
+					for (i = 0; i < pois.length; i++) {
+						listElems += "<li><a href=\"#\" onclick=\"showMarker(" + pois[i].latitude + "," + pois[i].longitude + ",'" + pois[i].label + "')\">" + pois[i].label + "</a></li>";
+					}
+				}
+			} else {
+				listElems += "<li><strong>ERROR " + httpReq.status + ": " + httpReq.statusText + "</strong></li>";
+			}
+			document.getElementById("searchResults").innerHTML = listElems;
+		});
+		httpReq.open("GET", "/servlet?" + searchString);
+		httpReq.send();
+		console.log("Sent HTTP request");
+	}
+</script>
+</html>
