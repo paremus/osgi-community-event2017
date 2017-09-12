@@ -15,6 +15,7 @@
     <module>org.example.command</module>
     <module>org.example.poi</module>
     <module>org.example.poi.test</module>
+    <module>org.example.web</module>
   </modules>
 
   <!-- Declare a profile for CI builds, where indexes are not permitted to
