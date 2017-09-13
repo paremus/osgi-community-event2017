@@ -13,6 +13,7 @@
     <module>_index</module>
     <module>_assembly</module>
     <module>org.example.command</module>
+    <module>org.example.poi</module>
   </modules>
 
   <!-- Declare a profile for CI builds, where indexes are not permitted to

@@ -28,6 +28,11 @@
       <artifactId>org.example.command</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>org.example.poi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
   </dependencies>
 
