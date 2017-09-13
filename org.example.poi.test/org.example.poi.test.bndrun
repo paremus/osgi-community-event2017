@@ -9,5 +9,7 @@
         osgi.identity;filter:='(osgi.identity=org.example.poi.test)'
 
 -runbundles: \
+        org.apache.felix.scr;version='[2.0.10,2.0.11)',\
         org.apache.servicemix.bundles.junit;version='[4.12.0,4.12.1)',\
+        org.example.poi;version='[1.0.0,1.0.1)',\
         org.example.poi.test;version='[1.0.0,1.0.1)'
